@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: DockerFile  # Убедитесь, что имя файла Dockerfile написано правильно (с заглавной буквы "D")
+    container_name: vk_bot_app
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://user:password@vk_bot_db/mydatabase
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    networks:
+      - my_network
+      
+  db:
+    image: postgres:latest
+    container_name: vk_bot_db
+    environment:
+      - POSTGRES_DB=mydatabase
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - my_network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com  # admin email
+      - PGADMIN_DEFAULT_PASSWORD=admin  # admin password
+    ports:
+      - "8080:80"  # порт, по которому будет доступен pgAdmin
+    depends_on:
+      - db
+    networks:
+      - my_network
+
+volumes:
+  postgres_data:
+
+networks:
+  my_network:

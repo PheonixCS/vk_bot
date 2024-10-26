@@ -1,0 +1,17 @@
+# Используем образ Python 3.13 Slim
+FROM python:3.13-alpine
+
+# Устанавливаем рабочую директорию
+WORKDIR /app
+
+
+# Устанавливаем зависимости (если есть requirements.txt)
+COPY requirements.txt requirements.txt
+
+RUN pip install --no-cache-dir -r requirements.txt
+# Копируем весь проект в рабочую директорию
+COPY . .
+
+
+# Определяем команду по умолчанию
+CMD python3 app/app.py  # Измените на нужный вам скрипт
